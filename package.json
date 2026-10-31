@@ -1,0 +1,24 @@
+{
+  "name": "cinemesh",
+  "version": "1.0.0",
+  "description": "CineMesh: High-Fidelity 1080p Screen & 6GB Movie P2P Streaming Service with Hi-Fi Stereo Audio",
+  "scripts": {
+    "install:all": "npm --prefix server install && npm --prefix client install",
+    "test:server": "npm --prefix server test",
+    "test:client": "npm --prefix client test",
+    "test": "npm run test:server && npm run test:client",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev"
+  },
+  "keywords": [
+    "webrtc",
+    "p2p",
+    "streaming",
+    "1080p",
+    "cinema",
+    "cinemesh",
+    "watchparty"
+  ],
+  "author": "",
+  "license": "MIT"
+}
