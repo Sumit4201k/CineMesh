@@ -1,122 +1,108 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
+import { Lobby } from './components/Lobby';
+import { CinemaPlayer } from './components/CinemaPlayer';
+import { HostControls } from './components/HostControls';
+import { Chat } from './components/Chat';
+import { useWebRTC } from './hooks/useWebRTC';
+import { Tv, Share2, LogOut, Copy, Check } from 'lucide-react';
+import { Button } from './components/ui/Button';
+import { Badge } from './components/ui/Badge';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [session, setSession] = useState(null);
+  const [copied, setCopied] = useState(false);
+
+  // Initialize WebRTC hook
+  const {
+    remoteStream,
+    localVideoRef,
+    peerCount,
+    isStreaming,
+    socket,
+    startScreenShare,
+    startLocalMovieFile,
+  } = useWebRTC(session || {});
+
+  const handleCopyLink = () => {
+    const inviteUrl = `${window.location.origin}?room=${session?.roomId}`;
+    navigator.clipboard.writeText(inviteUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  // 1. Show Lobby if no session active
+  if (!session) {
+    return <Lobby onJoinRoom={(userData) => setSession(userData)} />;
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div className="min-h-screen bg-cinema-950 text-white flex flex-col">
+      {/* Top Navigation Bar */}
+      <header className="h-16 border-b border-neutral-800/80 bg-cinema-900/50 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-50">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+            <Tv className="w-5 h-5" />
+          </div>
+          <div>
+            <h1 className="text-base font-bold tracking-tight">
+              Cine<span className="text-indigo-400">Mesh</span>
+            </h1>
+            <p className="text-[10px] text-neutral-400 font-medium">1080p Hi-Fi Watch Lounge</p>
+          </div>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
 
-      <div className="ticks"></div>
+        {/* Room Info & Controls */}
+        <div className="flex items-center gap-3">
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-cinema-800/80 border border-neutral-700/60 rounded-xl text-xs">
+            <span className="text-neutral-400">Room:</span>
+            <span className="font-mono font-semibold text-indigo-300">{session.roomId}</span>
+          </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+          <Button onClick={handleCopyLink} variant="secondary" size="sm" icon={copied ? Check : Copy}>
+            {copied ? 'Link Copied' : 'Invite Link'}
+          </Button>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+          <Button
+            onClick={() => {
+              setSession(null);
+              window.location.reload();
+            }}
+            variant="ghost"
+            size="sm"
+            icon={LogOut}
+            className="text-neutral-400 hover:text-red-400"
+          >
+            Leave
+          </Button>
+        </div>
+      </header>
+
+      {/* Main Theatre Grid */}
+      <main className="flex-1 p-4 lg:p-6 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+        {/* Left Column: Player & Broadcaster Controls */}
+        <div className="lg:col-span-3 space-y-6">
+          <CinemaPlayer
+            mediaStream={remoteStream}
+            isHost={session.isHost}
+            localVideoRef={localVideoRef}
+            peerCount={peerCount}
+            roomTitle={session.roomId}
+          />
+
+          {session.isHost && (
+            <HostControls
+              onStartScreenShare={startScreenShare}
+              onSelectMovieFile={startLocalMovieFile}
+              isStreaming={isStreaming}
+            />
+          )}
+        </div>
+
+        {/* Right Column: Real-time Room Chat */}
+        <div className="lg:col-span-1 h-[550px] lg:h-[620px] sticky top-22">
+          <Chat socket={socket} roomId={session.roomId} userName={session.userName} />
+        </div>
+      </main>
+    </div>
+  );
 }
-
-export default App
