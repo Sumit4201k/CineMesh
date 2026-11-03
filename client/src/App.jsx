@@ -1,16 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Lobby } from './components/Lobby';
 import { CinemaPlayer } from './components/CinemaPlayer';
 import { HostControls } from './components/HostControls';
 import { Chat } from './components/Chat';
 import { useWebRTC } from './hooks/useWebRTC';
-import { Tv, Share2, LogOut, Copy, Check } from 'lucide-react';
+import { Tv, LogOut, Copy, Check } from 'lucide-react';
 import { Button } from './components/ui/Button';
-import { Badge } from './components/ui/Badge';
 
 export default function App() {
   const [session, setSession] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [initialRoomId, setInitialRoomId] = useState('');
+
+  // Auto-detect invite link URL query parameter: ?room=XYZ
+  useEffect(() => {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const roomParam = urlParams.get('room');
+      if (roomParam) {
+        setInitialRoomId(roomParam.trim());
+      }
+    } catch (e) {
+      console.warn('Could not parse window query params:', e);
+    }
+  }, []);
 
   // Initialize WebRTC hook
   const {
@@ -32,7 +45,12 @@ export default function App() {
 
   // 1. Show Lobby if no session active
   if (!session) {
-    return <Lobby onJoinRoom={(userData) => setSession(userData)} />;
+    return (
+      <Lobby
+        initialRoomId={initialRoomId}
+        onJoinRoom={(userData) => setSession(userData)}
+      />
+    );
   }
 
   return (
@@ -65,6 +83,8 @@ export default function App() {
           <Button
             onClick={() => {
               setSession(null);
+              // Clear query params on leave
+              window.history.replaceState({}, document.title, window.location.pathname);
               window.location.reload();
             }}
             variant="ghost"

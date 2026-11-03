@@ -29,4 +29,27 @@ describe('Reusable UI & Lobby Components', () => {
     expect(handleJoin.mock.calls[0][0].isHost).toBe(true);
     expect(handleJoin.mock.calls[0][0].roomId).toMatch(/^mesh-/);
   });
+
+  it('automatically pre-fills roomId and switches to viewer join mode when initialRoomId prop is provided', () => {
+    const handleJoin = vi.fn();
+    render(<Lobby onJoinRoom={handleJoin} initialRoomId="marvel-watch-2026" />);
+
+    // Room code input should have initialRoomId pre-filled
+    const roomInput = screen.getByDisplayValue('marvel-watch-2026');
+    expect(roomInput).toBeInTheDocument();
+
+    // Submit button should say "Join Lounge" since it switches to Viewer mode automatically
+    const joinBtn = screen.getByRole('button', { name: /join lounge/i });
+    expect(joinBtn).toBeInTheDocument();
+
+    const nameInput = screen.getByPlaceholderText(/e\.g\. Alex/i);
+    fireEvent.change(nameInput, { target: { value: 'PhoneFriend' } });
+    fireEvent.click(joinBtn);
+
+    expect(handleJoin).toHaveBeenCalledWith({
+      roomId: 'marvel-watch-2026',
+      userName: 'PhoneFriend',
+      isHost: false,
+    });
+  });
 });

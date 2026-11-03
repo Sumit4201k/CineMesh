@@ -1,11 +1,24 @@
-import React, { useState } from 'react';
-import { Play, Tv, Users, Sparkles, ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Play, Tv, Sparkles, ShieldCheck } from 'lucide-react';
 import { Button } from './ui/Button';
 
-export function Lobby({ onJoinRoom }) {
+/**
+ * @file Lobby.jsx
+ * @description Room creation and joining portal.
+ * Automatically detects and pre-fills `initialRoomId` if user entered via an invite link.
+ */
+export function Lobby({ onJoinRoom, initialRoomId = '' }) {
   const [userName, setUserName] = useState('');
-  const [roomId, setRoomId] = useState('');
-  const [isHost, setIsHost] = useState(true);
+  const [roomId, setRoomId] = useState(initialRoomId);
+  const [isHost, setIsHost] = useState(!initialRoomId);
+
+  // If initialRoomId changes or is present on load, set room and default to viewer mode
+  useEffect(() => {
+    if (initialRoomId) {
+      setRoomId(initialRoomId);
+      setIsHost(false);
+    }
+  }, [initialRoomId]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
