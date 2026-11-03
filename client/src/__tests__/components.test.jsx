@@ -14,11 +14,14 @@ describe('Reusable UI & Lobby Components', () => {
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
 
-  it('renders Lobby and submits join payload with generated room code if empty', () => {
+  it('renders Lobby in normal mode with empty userName and empty roomId', () => {
     const handleJoin = vi.fn();
     render(<Lobby onJoinRoom={handleJoin} />);
 
+    // In normal mode, userName input is empty
     const nameInput = screen.getByPlaceholderText(/e\.g\. Alex/i);
+    expect(nameInput.value).toBe('');
+
     fireEvent.change(nameInput, { target: { value: 'MovieHost' } });
 
     const submitBtn = screen.getByRole('button', { name: /create cinema lounge/i });
@@ -30,7 +33,7 @@ describe('Reusable UI & Lobby Components', () => {
     expect(handleJoin.mock.calls[0][0].roomId).toMatch(/^mesh-/);
   });
 
-  it('automatically pre-fills roomId and switches to viewer join mode when initialRoomId prop is provided', () => {
+  it('automatically generates a random cinema-themed guest name and pre-fills roomId when initialRoomId prop is provided', () => {
     const handleJoin = vi.fn();
     render(<Lobby onJoinRoom={handleJoin} initialRoomId="marvel-watch-2026" />);
 
@@ -38,17 +41,21 @@ describe('Reusable UI & Lobby Components', () => {
     const roomInput = screen.getByDisplayValue('marvel-watch-2026');
     expect(roomInput).toBeInTheDocument();
 
-    // Submit button should say "Join Lounge" since it switches to Viewer mode automatically
+    // User name input should be automatically populated with a random guest name
+    const nameInput = screen.getByPlaceholderText(/e\.g\. Alex/i);
+    expect(nameInput.value).not.toBe('');
+    expect(nameInput.value.length).toBeGreaterThan(3);
+
+    // Mode is automatically switched to viewer join mode
     const joinBtn = screen.getByRole('button', { name: /join lounge/i });
     expect(joinBtn).toBeInTheDocument();
 
-    const nameInput = screen.getByPlaceholderText(/e\.g\. Alex/i);
-    fireEvent.change(nameInput, { target: { value: 'PhoneFriend' } });
+    // User can immediately click "Join Lounge" with the random name with 1 click!
     fireEvent.click(joinBtn);
 
     expect(handleJoin).toHaveBeenCalledWith({
       roomId: 'marvel-watch-2026',
-      userName: 'PhoneFriend',
+      userName: nameInput.value,
       isHost: false,
     });
   });

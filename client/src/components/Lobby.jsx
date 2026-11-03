@@ -1,24 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Tv, Sparkles, ShieldCheck } from 'lucide-react';
+import { Play, Tv, Sparkles, ShieldCheck, Dice5 } from 'lucide-react';
 import { Button } from './ui/Button';
+import { generateRandomGuestName } from '../services/guestNames';
 
 /**
  * @file Lobby.jsx
  * @description Room creation and joining portal.
- * Automatically detects and pre-fills `initialRoomId` if user entered via an invite link.
+ * 
+ * SPECIAL INVITE LINK HANDLING:
+ * When an invite link with ?room=XYZ is opened:
+ * 1. Pre-fills the room code.
+ * 2. Defaults to Viewer Mode ("Join with Code").
+ * 3. Automatically assigns a random cinema guest nickname (e.g. NeonPopcorn42)
+ *    so friends can join with 1 single click!
  */
 export function Lobby({ onJoinRoom, initialRoomId = '' }) {
   const [userName, setUserName] = useState('');
   const [roomId, setRoomId] = useState(initialRoomId);
   const [isHost, setIsHost] = useState(!initialRoomId);
 
-  // If initialRoomId changes or is present on load, set room and default to viewer mode
+  // If initialRoomId is present (user joined via link), generate random guest name & select viewer mode
   useEffect(() => {
     if (initialRoomId) {
       setRoomId(initialRoomId);
       setIsHost(false);
+      setUserName(generateRandomGuestName());
     }
   }, [initialRoomId]);
+
+  const handleRerollName = () => {
+    setUserName(generateRandomGuestName());
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -78,9 +90,21 @@ export function Lobby({ onJoinRoom, initialRoomId = '' }) {
 
           {/* User Name Field */}
           <div>
-            <label className="block text-xs font-medium text-neutral-300 mb-1.5">
-              Your Display Name
-            </label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs font-medium text-neutral-300">
+                Your Display Name
+              </label>
+              {initialRoomId && (
+                <button
+                  type="button"
+                  onClick={handleRerollName}
+                  className="text-[11px] text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition"
+                  title="Generate another fun nickname"
+                >
+                  <Dice5 className="w-3 h-3" /> Randomize Name
+                </button>
+              )}
+            </div>
             <input
               type="text"
               required
