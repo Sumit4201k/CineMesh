@@ -1,25 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Tv, Sparkles, ShieldCheck, Dice5 } from 'lucide-react';
+import { Play, Tv, Sparkles, ShieldCheck, Dice5, Radio, Film, Activity, Lock } from 'lucide-react';
 import { Button } from './ui/Button';
+import { Badge } from './ui/Badge';
 import { generateRandomGuestName } from '../services/guestNames';
 
 /**
  * @file Lobby.jsx
- * @description Room creation and joining portal.
- * 
- * SPECIAL INVITE LINK HANDLING:
- * When an invite link with ?room=XYZ is opened:
- * 1. Pre-fills the room code.
- * 2. Defaults to Viewer Mode ("Join with Code").
- * 3. Automatically assigns a random cinema guest nickname (e.g. NeonPopcorn42)
- *    so friends can join with 1 single click!
+ * @description Cinema Lounge Arrival Stage.
+ * Art direction: Midnight screening theater with warm amber projector lighting,
+ * tactile mode switch, and instant zero-click guest entry for invited friends.
  */
 export function Lobby({ onJoinRoom, initialRoomId = '' }) {
   const [userName, setUserName] = useState('');
   const [roomId, setRoomId] = useState(initialRoomId);
   const [isHost, setIsHost] = useState(!initialRoomId);
 
-  // If initialRoomId is present (user joined via link), generate random guest name & select viewer mode
   useEffect(() => {
     if (initialRoomId) {
       setRoomId(initialRoomId);
@@ -45,107 +40,152 @@ export function Lobby({ onJoinRoom, initialRoomId = '' }) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-cinema-950 relative overflow-hidden">
-      {/* Background Ambience Glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-600/15 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 left-1/3 w-80 h-80 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="w-full max-w-md bg-cinema-900 border border-neutral-800 rounded-3xl p-8 shadow-2xl relative z-10 backdrop-blur-xl">
-        {/* Brand Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-600/10 border border-indigo-500/20 mb-3 text-indigo-400">
-            <Tv className="w-7 h-7" />
+    <div className="min-h-screen flex flex-col justify-between bg-cinema-950 projector-stage-glow text-neutral-100 relative selection:bg-amber-400 selection:text-cinema-950 overflow-hidden">
+      {/* Top Technical Telemetry Strip */}
+      <header className="w-full border-b border-neutral-800/80 bg-cinema-950/70 backdrop-blur-md px-6 py-3.5 flex items-center justify-between z-20">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-400">
+            <Film className="w-4 h-4" />
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white">
-            Cine<span className="text-indigo-400">Mesh</span>
-          </h1>
-          <p className="text-xs text-neutral-400 mt-1.5 flex items-center justify-center gap-1">
-            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-            1080p Screen & 6GB Movie P2P Streaming
-          </p>
+          <div className="flex items-baseline gap-2">
+            <span className="font-display font-bold tracking-tight text-white text-base">CineMesh</span>
+            <span className="font-mono text-[10px] text-amber-400/80 uppercase">v1.2 // P2P Engine</span>
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Role Selector Tabs */}
-          <div className="grid grid-cols-2 p-1 bg-cinema-950 rounded-xl border border-neutral-800">
-            <button
-              type="button"
-              onClick={() => setIsHost(true)}
-              className={`py-2 text-xs font-semibold rounded-lg transition-all ${
-                isHost ? 'bg-indigo-600 text-white shadow' : 'text-neutral-400 hover:text-white'
-              }`}
-            >
-              Host a Room
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsHost(false)}
-              className={`py-2 text-xs font-semibold rounded-lg transition-all ${
-                !isHost ? 'bg-indigo-600 text-white shadow' : 'text-neutral-400 hover:text-white'
-              }`}
-            >
-              Join with Code
-            </button>
-          </div>
+        <div className="hidden sm:flex items-center gap-3">
+          <Badge variant="cyan" icon={Activity}>Direct WebRTC Mesh</Badge>
+          <Badge variant="hifi" icon={Sparkles}>Opus 256kbps Stereo</Badge>
+        </div>
+      </header>
 
-          {/* User Name Field */}
-          <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-medium text-neutral-300">
-                Your Display Name
-              </label>
-              {initialRoomId && (
-                <button
-                  type="button"
-                  onClick={handleRerollName}
-                  className="text-[11px] text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition"
-                  title="Generate another fun nickname"
-                >
-                  <Dice5 className="w-3 h-3" /> Randomize Name
-                </button>
-              )}
+      {/* Main Center Stage */}
+      <main className="flex-1 flex items-center justify-center p-4 sm:p-6 z-10">
+        <div className="w-full max-w-lg bg-cinema-900/90 border border-neutral-800/90 rounded-3xl p-6 sm:p-9 shadow-player-stage backdrop-blur-2xl relative">
+          
+          {/* Subtle Ambient Badge */}
+          <div className="flex items-center justify-center mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cinema-800/70 border border-neutral-700/60 text-[11px] font-mono text-neutral-300">
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+              <span>₹0 Bandwidth &bull; Zero Cloud Egress</span>
             </div>
-            <input
-              type="text"
-              required
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              placeholder="e.g. Alex"
-              className="w-full px-4 py-2.5 bg-cinema-800 border border-neutral-700/60 rounded-xl text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-indigo-500"
-            />
           </div>
 
-          {/* Room ID Field */}
-          <div>
-            <label className="block text-xs font-medium text-neutral-300 mb-1.5">
-              {isHost ? 'Room Code (Optional, leave blank to auto-generate)' : 'Room Code'}
-            </label>
-            <input
-              type="text"
-              required={!isHost}
-              value={roomId}
-              onChange={(e) => setRoomId(e.target.value)}
-              placeholder={isHost ? 'e.g. marvel-night (optional)' : 'Enter room code'}
-              className="w-full px-4 py-2.5 bg-cinema-800 border border-neutral-700/60 rounded-xl text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-indigo-500"
-            />
+          {/* Heading */}
+          <div className="text-center mb-8">
+            <h1 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-2">
+              Cinema-Grade Streaming
+            </h1>
+            <p className="text-sm text-neutral-400 max-w-sm mx-auto leading-relaxed">
+              Watch 1080p movies and screen shares with friends with uncompressed, cinema-fidelity stereo sound.
+            </p>
           </div>
 
-          <Button
-            type="submit"
-            variant={isHost ? 'primary' : 'hifi'}
-            size="lg"
-            icon={Play}
-            className="w-full mt-2"
-          >
-            {isHost ? 'Create Cinema Lounge' : 'Join Lounge'}
-          </Button>
-        </form>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Tactile Role Switcher */}
+            <div className="p-1 bg-cinema-950 rounded-2xl border border-neutral-800/90 grid grid-cols-2 gap-1">
+              <button
+                type="button"
+                onClick={() => setIsHost(true)}
+                className={`py-2.5 px-3 rounded-xl text-xs font-semibold tracking-wide transition-all duration-200 flex items-center justify-center gap-2 ${
+                  isHost
+                    ? 'bg-cinema-850 text-white shadow-sm border border-neutral-700/80 font-bold'
+                    : 'text-neutral-400 hover:text-neutral-200'
+                }`}
+              >
+                <Radio className={`w-3.5 h-3.5 ${isHost ? 'text-amber-400' : 'text-neutral-500'}`} />
+                Host a Lounge
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsHost(false)}
+                className={`py-2.5 px-3 rounded-xl text-xs font-semibold tracking-wide transition-all duration-200 flex items-center justify-center gap-2 ${
+                  !isHost
+                    ? 'bg-cinema-850 text-white shadow-sm border border-neutral-700/80 font-bold'
+                    : 'text-neutral-400 hover:text-neutral-200'
+                }`}
+              >
+                <Tv className={`w-3.5 h-3.5 ${!isHost ? 'text-amber-400' : 'text-neutral-500'}`} />
+                Join with Code
+              </button>
+            </div>
 
-        <div className="mt-6 pt-4 border-t border-neutral-800/80 text-center flex items-center justify-center gap-1.5 text-[11px] text-neutral-500">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-          End-to-End Encrypted P2P Media (Zero Server Egress)
+            {/* Display Name Field */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between text-xs">
+                <label className="font-medium text-neutral-300">Your Alias</label>
+                {initialRoomId && (
+                  <button
+                    type="button"
+                    onClick={handleRerollName}
+                    className="text-amber-400/90 hover:text-amber-300 font-mono text-[11px] flex items-center gap-1 transition"
+                  >
+                    <Dice5 className="w-3 h-3" /> Re-roll Guest Name
+                  </button>
+                )}
+              </div>
+              <input
+                type="text"
+                required
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                placeholder="e.g. Alex"
+                className="w-full px-4 py-3 bg-cinema-950 border border-neutral-800 rounded-xl text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/30 transition-all font-medium"
+              />
+            </div>
+
+            {/* Room Code Field */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between text-xs">
+                <label className="font-medium text-neutral-300">
+                  {isHost ? 'Lounge Code (Optional)' : 'Lounge Code'}
+                </label>
+                {isHost && (
+                  <span className="font-mono text-[10px] text-neutral-500">Auto-generates if empty</span>
+                )}
+              </div>
+              <input
+                type="text"
+                required={!isHost}
+                value={roomId}
+                onChange={(e) => setRoomId(e.target.value)}
+                placeholder={isHost ? 'e.g. dune-night' : 'Enter 6-char code'}
+                className="w-full px-4 py-3 bg-cinema-950 border border-neutral-800 rounded-xl text-sm text-white font-mono placeholder-neutral-600 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/30 transition-all"
+              />
+            </div>
+
+            {/* Action CTA */}
+            <Button
+              type="submit"
+              variant={isHost ? 'primary' : 'hifi'}
+              size="lg"
+              icon={Play}
+              className="w-full text-base font-bold shadow-lg mt-3"
+            >
+              {isHost ? 'Launch Cinema Lounge' : 'Join Lounge'}
+            </Button>
+          </form>
+
+          {/* Security & P2P Footnote */}
+          <div className="mt-8 pt-4 border-t border-neutral-800/80 flex items-center justify-center gap-2 text-xs font-mono text-neutral-500">
+            <Lock className="w-3.5 h-3.5 text-emerald-400" />
+            <span>End-to-End Encrypted DTLS / SRTP Audio & Video</span>
+          </div>
         </div>
-      </div>
+      </main>
+
+      {/* Footer System Specs */}
+      <footer className="w-full px-6 py-4 border-t border-neutral-800/60 bg-cinema-950/80 backdrop-blur-md flex flex-wrap items-center justify-between text-xs text-neutral-500 gap-3 z-10">
+        <div className="flex items-center gap-4">
+          <span className="text-neutral-400 font-medium">Modes:</span>
+          <span>1080p60 Screen Share</span>
+          <span>&bull;</span>
+          <span>6GB Local Movie Direct Stream</span>
+        </div>
+        <div className="flex items-center gap-2 font-mono text-[11px] text-neutral-400">
+          <span>Engine: WebRTC Mesh + Google STUN</span>
+        </div>
+      </footer>
     </div>
   );
 }

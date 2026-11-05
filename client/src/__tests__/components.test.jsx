@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { Lobby } from '../components/Lobby';
 import { Button } from '../components/ui/Button';
 
-describe('Reusable UI & Lobby Components', () => {
+describe('Reusable UI & Lobby Components (Cinematic Redesign)', () => {
   it('renders Button component with children and handles onClick', () => {
     const handleClick = vi.fn();
     render(<Button onClick={handleClick}>Start Stream</Button>);
@@ -14,17 +14,16 @@ describe('Reusable UI & Lobby Components', () => {
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
 
-  it('renders Lobby in normal mode with empty userName and empty roomId', () => {
+  it('renders Lobby in normal mode with empty alias and empty room code', () => {
     const handleJoin = vi.fn();
     render(<Lobby onJoinRoom={handleJoin} />);
 
-    // In normal mode, userName input is empty
     const nameInput = screen.getByPlaceholderText(/e\.g\. Alex/i);
     expect(nameInput.value).toBe('');
 
     fireEvent.change(nameInput, { target: { value: 'MovieHost' } });
 
-    const submitBtn = screen.getByRole('button', { name: /create cinema lounge/i });
+    const submitBtn = screen.getByRole('button', { name: /launch cinema lounge/i });
     fireEvent.click(submitBtn);
 
     expect(handleJoin).toHaveBeenCalledTimes(1);
@@ -33,7 +32,7 @@ describe('Reusable UI & Lobby Components', () => {
     expect(handleJoin.mock.calls[0][0].roomId).toMatch(/^mesh-/);
   });
 
-  it('automatically generates a random cinema-themed guest name and pre-fills roomId when initialRoomId prop is provided', () => {
+  it('automatically generates a random cinema guest alias and pre-fills roomId when initialRoomId prop is provided', () => {
     const handleJoin = vi.fn();
     render(<Lobby onJoinRoom={handleJoin} initialRoomId="marvel-watch-2026" />);
 

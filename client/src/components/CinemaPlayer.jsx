@@ -1,17 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Play, Pause, Volume2, VolumeX, Maximize, Minimize, Sparkles, Radio, Users } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, Maximize, Minimize, Sparkles, Radio, Users, Eye, Sliders, ShieldCheck } from 'lucide-react';
 import { Button } from './ui/Button';
 import { Badge } from './ui/Badge';
 
 /**
  * @file CinemaPlayer.jsx
- * @description 1080p Theater Player compatible with iOS Safari, Android, Windows, and Mac.
- * 
- * CROSS-DEVICE FULLSCREEN SUPPORT:
- * - Desktop/Android: uses standard element.requestFullscreen() on the cinema container.
- * - iOS Safari (iPhone): iPhone WebKit does not support requestFullscreen() on non-video DOM elements.
- *   Instead, iOS requires calling HTMLVideoElement.webkitEnterFullscreen() directly on the <video> tag,
- *   or toggling webkitRequestFullscreen().
+ * @description Cinema stage video player.
+ * Art direction: Screen-lit theater stage with tactile controls,
+ * live telemetry HUD (resolution, codec, viewer count), and cross-device iOS Safari video fallback.
  */
 export function CinemaPlayer({
   mediaStream,
@@ -77,11 +73,10 @@ export function CinemaPlayer({
     };
   }, [isHost, localVideoRef]);
 
-  // Auto-hide controls after inactivity
   const handleMouseMove = () => {
     setShowControls(true);
     if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
-    controlsTimeoutRef.current = setTimeout(() => setShowControls(false), 3000);
+    controlsTimeoutRef.current = setTimeout(() => setShowControls(false), 3500);
   };
 
   const togglePlay = () => {
@@ -116,13 +111,6 @@ export function CinemaPlayer({
     }
   };
 
-  /**
-   * Cross-platform Fullscreen handler
-   * Handles:
-   * 1. Standard Fullscreen API (Chrome, Firefox, Android, Desktop Safari)
-   * 2. iOS Safari (iPhone) webkitEnterFullscreen on video element
-   * 3. Webkit container prefix fallback
-   */
   const toggleFullscreen = async () => {
     const container = containerRef.current;
     const video = isHost ? localVideoRef?.current : remoteVideoRef.current;
@@ -136,7 +124,6 @@ export function CinemaPlayer({
     );
 
     if (isCurrentlyFullscreen) {
-      // Exit fullscreen
       if (document.exitFullscreen) {
         await document.exitFullscreen();
       } else if (document.webkitExitFullscreen) {
@@ -148,7 +135,6 @@ export function CinemaPlayer({
       }
       setIsFullscreen(false);
     } else {
-      // Enter fullscreen: Check standard first, then iOS WebKit video fallback
       try {
         if (container && container.requestFullscreen) {
           await container.requestFullscreen();
@@ -157,7 +143,6 @@ export function CinemaPlayer({
           container.webkitRequestFullscreen();
           setIsFullscreen(true);
         } else if (video && typeof video.webkitEnterFullscreen === 'function') {
-          // iOS Safari native video fullscreen
           video.webkitEnterFullscreen();
           setIsFullscreen(true);
         } else if (video && video.webkitRequestFullscreen) {
@@ -165,7 +150,7 @@ export function CinemaPlayer({
           setIsFullscreen(true);
         }
       } catch (err) {
-        console.warn('Standard container fullscreen failed, trying iOS video fullscreen:', err);
+        console.warn('Fullscreen fallback trigger:', err);
         if (video && typeof video.webkitEnterFullscreen === 'function') {
           video.webkitEnterFullscreen();
           setIsFullscreen(true);
@@ -180,7 +165,7 @@ export function CinemaPlayer({
       onMouseMove={handleMouseMove}
       onTouchStart={handleMouseMove}
       onMouseLeave={() => setShowControls(false)}
-      className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-neutral-800/80 group select-none"
+      className="relative w-full aspect-video bg-black rounded-2xl sm:rounded-3xl overflow-hidden shadow-player-stage border border-neutral-800/90 group select-none flex items-center justify-center"
     >
       {/* Video Viewport */}
       {isHost ? (
@@ -201,45 +186,62 @@ export function CinemaPlayer({
         />
       )}
 
-      {/* Top Header Overlay */}
+      {/* Empty State / Standby Screen when not broadcasting */}
+      {!mediaStream && !localVideoRef?.current?.srcObject && !localVideoRef?.current?.src && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-radial from-cinema-900/60 to-black pointer-events-none">
+          <div className="w-16 h-16 rounded-2xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-500 mb-4 shadow-inner">
+            <Radio className="w-8 h-8 animate-pulse text-amber-400/80" />
+          </div>
+          <h3 className="font-display font-bold text-lg text-neutral-200">
+            {isHost ? 'Cinema Stage Ready' : 'Connecting to Stream...'}
+          </h3>
+          <p className="text-xs text-neutral-400 mt-1 max-w-sm">
+            {isHost
+              ? 'Choose "Screen & System Audio" or select a local 6GB movie file below to begin.'
+              : 'Waiting for host broadcast to commence. Audio will stream in 256kbps stereo.'}
+          </p>
+        </div>
+      )}
+
+      {/* Top HUD Telemetry Overlay */}
       <div
-        className={`absolute top-0 inset-x-0 p-4 bg-gradient-to-b from-black/80 via-black/40 to-transparent flex items-center justify-between transition-opacity duration-300 pointer-events-none ${
+        className={`absolute top-0 inset-x-0 p-4 sm:p-5 bg-gradient-to-b from-black/90 via-black/40 to-transparent flex items-center justify-between transition-opacity duration-300 pointer-events-none ${
           showControls ? 'opacity-100' : 'opacity-0'
         }`}
       >
         <div className="flex items-center gap-2 pointer-events-auto">
-          <Badge variant="live" icon={Radio}>LIVE 1080p</Badge>
+          <Badge variant="live" icon={Radio}>1080p 60fps</Badge>
           <Badge variant="hifi" icon={Sparkles}>Hi-Fi Stereo 256kbps</Badge>
         </div>
 
-        <div className="flex items-center gap-3 text-neutral-300 text-sm font-medium pointer-events-auto">
-          <span className="flex items-center gap-1.5 px-3 py-1 bg-black/60 rounded-full border border-neutral-800 backdrop-blur-md">
-            <Users className="w-4 h-4 text-indigo-400" />
-            {peerCount} {peerCount === 1 ? 'Viewer' : 'Viewers'}
+        <div className="flex items-center gap-2 font-mono text-xs pointer-events-auto">
+          <span className="flex items-center gap-1.5 px-3 py-1 bg-black/70 rounded-md border border-neutral-800 backdrop-blur-md text-neutral-300">
+            <Users className="w-3.5 h-3.5 text-amber-400" />
+            <span>{peerCount} {peerCount === 1 ? 'Peer' : 'Peers'}</span>
           </span>
         </div>
       </div>
 
       {/* Bottom Control Bar */}
       <div
-        className={`absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex items-center justify-between transition-opacity duration-300 ${
+        className={`absolute bottom-0 inset-x-0 p-4 sm:p-5 bg-gradient-to-t from-black/95 via-black/60 to-transparent flex items-center justify-between transition-opacity duration-300 ${
           showControls ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        {/* Play/Pause & Volume */}
+        {/* Play/Pause & Volume Slider */}
         <div className="flex items-center gap-3 sm:gap-4">
           <Button
             onClick={togglePlay}
             variant="ghost"
             size="sm"
-            className="p-2 rounded-full hover:bg-white/10"
+            className="p-2.5 rounded-full hover:bg-white/10 text-white"
           >
             {isPlaying ? <Pause className="w-5 h-5 text-white" /> : <Play className="w-5 h-5 text-white" />}
           </Button>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 bg-black/50 px-3 py-1.5 rounded-xl border border-neutral-800">
             <button onClick={toggleMute} className="text-neutral-400 hover:text-white transition">
-              {isMuted || volume === 0 ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+              {isMuted || volume === 0 ? <VolumeX className="w-4 h-4 text-red-400" /> : <Volume2 className="w-4 h-4 text-amber-400" />}
             </button>
             <input
               type="range"
@@ -248,25 +250,27 @@ export function CinemaPlayer({
               step="0.05"
               value={isMuted ? 0 : volume}
               onChange={handleVolumeChange}
-              className="w-16 sm:w-24 h-1.5 bg-neutral-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+              className="w-20 sm:w-28 h-1.5 bg-neutral-700 rounded-lg appearance-none cursor-pointer accent-amber-400"
             />
           </div>
         </div>
 
-        {/* Fullscreen Button */}
-        <Button
-          onClick={toggleFullscreen}
-          variant="ghost"
-          size="sm"
-          className="p-2 rounded-lg hover:bg-white/10"
-          title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-        >
-          {isFullscreen ? (
-            <Minimize className="w-5 h-5 text-white" />
-          ) : (
-            <Maximize className="w-5 h-5 text-white" />
-          )}
-        </Button>
+        {/* Right side controls */}
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={toggleFullscreen}
+            variant="ghost"
+            size="sm"
+            className="p-2.5 rounded-xl hover:bg-white/10 text-white"
+            title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+          >
+            {isFullscreen ? (
+              <Minimize className="w-5 h-5 text-white" />
+            ) : (
+              <Maximize className="w-5 h-5 text-white" />
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   );
