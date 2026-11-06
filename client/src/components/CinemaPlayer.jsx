@@ -1,13 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Play, Pause, Volume2, VolumeX, Maximize, Minimize, Sparkles, Radio, Users, Eye, Sliders, ShieldCheck } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, Maximize, Minimize, Sparkles, Radio, Users } from 'lucide-react';
 import { Button } from './ui/Button';
 import { Badge } from './ui/Badge';
 
 /**
  * @file CinemaPlayer.jsx
- * @description Cinema stage video player.
- * Art direction: Screen-lit theater stage with tactile controls,
- * live telemetry HUD (resolution, codec, viewer count), and cross-device iOS Safari video fallback.
+ * @description Cinema stage video player branded with CineMesh purple/cyan styling.
  */
 export function CinemaPlayer({
   mediaStream,
@@ -35,7 +33,7 @@ export function CinemaPlayer({
     }
   }, [mediaStream, isHost]);
 
-  // Fullscreen change listener (standard browsers)
+  // Fullscreen change listener
   useEffect(() => {
     const handleFullscreenChange = () => {
       const activeFs = !!(
@@ -56,7 +54,7 @@ export function CinemaPlayer({
     };
   }, []);
 
-  // iOS webkit fullscreen event listeners on the video elements
+  // iOS webkit fullscreen event listeners
   useEffect(() => {
     const activeVideo = isHost ? localVideoRef?.current : remoteVideoRef.current;
     if (!activeVideo) return;
@@ -165,7 +163,7 @@ export function CinemaPlayer({
       onMouseMove={handleMouseMove}
       onTouchStart={handleMouseMove}
       onMouseLeave={() => setShowControls(false)}
-      className="relative w-full aspect-video bg-black rounded-2xl sm:rounded-3xl overflow-hidden shadow-player-stage border border-neutral-800/90 group select-none flex items-center justify-center"
+      className="relative w-full aspect-video bg-black rounded-2xl sm:rounded-3xl overflow-hidden shadow-player-stage border border-brand-border group select-none flex items-center justify-center"
     >
       {/* Video Viewport */}
       {isHost ? (
@@ -186,13 +184,13 @@ export function CinemaPlayer({
         />
       )}
 
-      {/* Empty State / Standby Screen when not broadcasting */}
+      {/* Standby screen when not broadcasting */}
       {!mediaStream && !localVideoRef?.current?.srcObject && !localVideoRef?.current?.src && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-radial from-cinema-900/60 to-black pointer-events-none">
-          <div className="w-16 h-16 rounded-2xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-500 mb-4 shadow-inner">
-            <Radio className="w-8 h-8 animate-pulse text-amber-400/80" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-radial from-brand-card/70 to-black pointer-events-none">
+          <div className="w-16 h-16 rounded-2xl bg-brand-card border border-brand-border flex items-center justify-center text-brand-cyan mb-4 shadow-cyan-glow">
+            <Radio className="w-8 h-8 animate-pulse text-brand-cyan" />
           </div>
-          <h3 className="font-display font-bold text-lg text-neutral-200">
+          <h3 className="font-display font-bold text-lg text-white">
             {isHost ? 'Cinema Stage Ready' : 'Connecting to Stream...'}
           </h3>
           <p className="text-xs text-neutral-400 mt-1 max-w-sm">
@@ -211,12 +209,12 @@ export function CinemaPlayer({
       >
         <div className="flex items-center gap-2 pointer-events-auto">
           <Badge variant="live" icon={Radio}>1080p 60fps</Badge>
-          <Badge variant="hifi" icon={Sparkles}>Hi-Fi Stereo 256kbps</Badge>
+          <Badge variant="cyan" icon={Sparkles}>Hi-Fi Stereo 256kbps</Badge>
         </div>
 
         <div className="flex items-center gap-2 font-mono text-xs pointer-events-auto">
-          <span className="flex items-center gap-1.5 px-3 py-1 bg-black/70 rounded-md border border-neutral-800 backdrop-blur-md text-neutral-300">
-            <Users className="w-3.5 h-3.5 text-amber-400" />
+          <span className="flex items-center gap-1.5 px-3 py-1 bg-brand-card/90 rounded-md border border-brand-border backdrop-blur-md text-neutral-200">
+            <Users className="w-3.5 h-3.5 text-brand-cyan" />
             <span>{peerCount} {peerCount === 1 ? 'Peer' : 'Peers'}</span>
           </span>
         </div>
@@ -239,9 +237,9 @@ export function CinemaPlayer({
             {isPlaying ? <Pause className="w-5 h-5 text-white" /> : <Play className="w-5 h-5 text-white" />}
           </Button>
 
-          <div className="flex items-center gap-2 bg-black/50 px-3 py-1.5 rounded-xl border border-neutral-800">
+          <div className="flex items-center gap-2 bg-black/60 px-3 py-1.5 rounded-xl border border-brand-border">
             <button onClick={toggleMute} className="text-neutral-400 hover:text-white transition">
-              {isMuted || volume === 0 ? <VolumeX className="w-4 h-4 text-red-400" /> : <Volume2 className="w-4 h-4 text-amber-400" />}
+              {isMuted || volume === 0 ? <VolumeX className="w-4 h-4 text-red-400" /> : <Volume2 className="w-4 h-4 text-brand-cyan" />}
             </button>
             <input
               type="range"
@@ -250,7 +248,7 @@ export function CinemaPlayer({
               step="0.05"
               value={isMuted ? 0 : volume}
               onChange={handleVolumeChange}
-              className="w-20 sm:w-28 h-1.5 bg-neutral-700 rounded-lg appearance-none cursor-pointer accent-amber-400"
+              className="w-20 sm:w-28 h-1.5 bg-neutral-700 rounded-lg appearance-none cursor-pointer accent-brand-cyan"
             />
           </div>
         </div>

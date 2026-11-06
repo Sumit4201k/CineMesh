@@ -1,11 +1,10 @@
 import React, { useRef } from 'react';
-import { Monitor, Film, Sparkles, CheckCircle2, HardDrive, Wifi } from 'lucide-react';
+import { Monitor, Film, CheckCircle2, HardDrive } from 'lucide-react';
 import { Button } from './ui/Button';
 
 /**
  * @file HostControls.jsx
- * @description Tactile Broadcaster Command Center.
- * Art direction: Audio mixing desk & projector control panel aesthetics.
+ * @description Tactile Broadcaster Command Center branded with CineMesh purple/cyan aesthetic.
  */
 export function HostControls({ onStartScreenShare, onSelectMovieFile, isStreaming }) {
   const fileInputRef = useRef(null);
@@ -18,7 +17,7 @@ export function HostControls({ onStartScreenShare, onSelectMovieFile, isStreamin
   };
 
   return (
-    <div className="bg-cinema-900/90 border border-neutral-800/90 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-tactile-card backdrop-blur-xl">
+    <div className="bg-brand-card/90 border border-brand-border rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-tactile-card backdrop-blur-xl">
       <div className="flex flex-wrap items-center justify-between gap-2 mb-5">
         <div>
           <div className="flex items-center gap-2">
@@ -26,7 +25,7 @@ export function HostControls({ onStartScreenShare, onSelectMovieFile, isStreamin
               Broadcaster Console
             </h2>
             {isStreaming && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[11px] font-mono font-semibold text-emerald-400">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-brand-cyan/10 border border-brand-cyan/40 text-[11px] font-mono font-semibold text-brand-cyan">
                 <CheckCircle2 className="w-3.5 h-3.5" /> Streaming Active
               </span>
             )}
@@ -39,10 +38,10 @@ export function HostControls({ onStartScreenShare, onSelectMovieFile, isStreamin
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Mode 1: High-Performance Screen Share */}
-        <div className="p-5 rounded-2xl bg-cinema-850/80 border border-neutral-800/80 hover:border-neutral-700/80 transition-all flex flex-col justify-between group">
+        <div className="p-5 rounded-2xl bg-brand-canvas/80 border border-brand-border hover:border-brand-borderLight transition-all flex flex-col justify-between group">
           <div>
-            <div className="flex items-center gap-2 text-amber-400 font-semibold text-sm mb-1.5 font-display">
-              <Monitor className="w-4 h-4 text-amber-400" />
+            <div className="flex items-center gap-2 text-brand-purpleLight font-semibold text-sm mb-1.5 font-display">
+              <Monitor className="w-4 h-4 text-brand-cyan" />
               <span>Source A: Screen & System Audio</span>
             </div>
             <p className="text-xs text-neutral-400 leading-relaxed">
@@ -62,14 +61,14 @@ export function HostControls({ onStartScreenShare, onSelectMovieFile, isStreamin
         </div>
 
         {/* Mode 2: Direct 6GB Local Movie Player */}
-        <div className="p-5 rounded-2xl bg-cinema-850/80 border border-neutral-800/80 hover:border-neutral-700/80 transition-all flex flex-col justify-between group">
+        <div className="p-5 rounded-2xl bg-brand-canvas/80 border border-brand-border hover:border-brand-borderLight transition-all flex flex-col justify-between group">
           <div>
-            <div className="flex items-center gap-2 text-emerald-400 font-semibold text-sm mb-1.5 font-display">
-              <HardDrive className="w-4 h-4 text-emerald-400" />
+            <div className="flex items-center gap-2 text-brand-cyan font-semibold text-sm mb-1.5 font-display">
+              <HardDrive className="w-4 h-4 text-brand-cyan" />
               <span>Source B: Local 6GB Cinema File</span>
             </div>
             <p className="text-xs text-neutral-400 leading-relaxed">
-              Pipes any local <code className="text-emerald-300 font-mono bg-cinema-900 px-1 py-0.5 rounded">.mp4</code> or <code className="text-emerald-300 font-mono bg-cinema-900 px-1 py-0.5 rounded">.mkv</code> directly from disk into WebRTC. Zero upload time, uncompressed bitstream quality.
+              Pipes any local <code className="text-brand-cyan font-mono bg-brand-card px-1 py-0.5 rounded">.mp4</code> or <code className="text-brand-cyan font-mono bg-brand-card px-1 py-0.5 rounded">.mkv</code> directly from disk into WebRTC. Zero upload time, uncompressed bitstream quality.
             </p>
           </div>
 
@@ -83,7 +82,7 @@ export function HostControls({ onStartScreenShare, onSelectMovieFile, isStreamin
 
           <Button
             onClick={() => fileInputRef.current?.click()}
-            variant="hifi"
+            variant="cyan"
             size="md"
             icon={Film}
             className="mt-5 w-full font-bold"

@@ -4,15 +4,12 @@ import { CinemaPlayer } from './components/CinemaPlayer';
 import { HostControls } from './components/HostControls';
 import { Chat } from './components/Chat';
 import { useWebRTC } from './hooks/useWebRTC';
-import { Film, LogOut, Copy, Check, Radio, Sparkles, Activity } from 'lucide-react';
+import { LogOut, Copy, Check, Radio } from 'lucide-react';
 import { Button } from './components/ui/Button';
-import { Badge } from './components/ui/Badge';
 
 /**
  * @file App.jsx
- * @description CineMesh Theater Experience.
- * Art direction: Ambient screening room with projector glow,
- * responsive multi-column stage grid, and synchronized real-time P2P engine.
+ * @description CineMesh Theater Experience branded with official logo & purple/cyan styling.
  */
 export default function App() {
   const [session, setSession] = useState(null);
@@ -61,21 +58,17 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-cinema-950 text-neutral-100 flex flex-col font-sans selection:bg-amber-400 selection:text-cinema-950">
+    <div className="min-h-screen bg-brand-canvas text-neutral-100 flex flex-col font-sans selection:bg-brand-purple selection:text-brand-cyan">
       {/* Top Theater Header & Telemetry Bar */}
-      <header className="h-16 border-b border-neutral-800/80 bg-cinema-900/60 backdrop-blur-xl px-4 sm:px-8 flex items-center justify-between sticky top-0 z-50">
+      <header className="h-16 border-b border-brand-border/80 bg-brand-canvas/70 backdrop-blur-xl px-4 sm:px-8 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-400 shadow-cinema-glow">
-            <Film className="w-4 h-4" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="font-display font-extrabold text-base tracking-tight text-white">
-                Cine<span className="text-amber-400">Mesh</span>
-              </h1>
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            </div>
-            <p className="font-mono text-[10px] text-neutral-500 uppercase">
+          <img
+            src="/cinemesh-logo.png"
+            alt="CineMesh"
+            className="h-8 w-auto object-contain drop-shadow-[0_0_12px_rgba(109,24,242,0.4)]"
+          />
+          <div className="hidden sm:block pl-3 border-l border-brand-border">
+            <p className="font-mono text-[10px] text-brand-cyan/80 uppercase">
               {session.isHost ? 'Broadcaster Seat' : 'Viewer Seat'} &bull; {session.userName}
             </p>
           </div>
@@ -83,14 +76,14 @@ export default function App() {
 
         {/* Room Code & Header Actions */}
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-cinema-950/80 border border-neutral-800 rounded-xl text-xs font-mono">
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-brand-card/90 border border-brand-border rounded-xl text-xs font-mono">
             <span className="text-neutral-500">ROOM:</span>
-            <span className="font-semibold text-amber-400">{session.roomId}</span>
+            <span className="font-semibold text-brand-cyan">{session.roomId}</span>
           </div>
 
           <Button
             onClick={handleCopyLink}
-            variant="secondary"
+            variant="cyan"
             size="sm"
             icon={copied ? Check : Copy}
             className="text-xs"
