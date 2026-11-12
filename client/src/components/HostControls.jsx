@@ -17,15 +17,15 @@ export function HostControls({ onStartScreenShare, onSelectMovieFile, isStreamin
   };
 
   return (
-    <div className="bg-brand-card/90 border border-brand-border rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-tactile-card backdrop-blur-xl">
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-5">
+    <div className="bg-brand-card border border-brand-border p-4 sm:p-6 shadow-tactile-card">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="font-display font-bold text-lg text-white">
+            <h2 className="font-display font-bold text-base sm:text-lg text-white">
               Broadcaster Console
             </h2>
             {isStreaming && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-brand-cyan/10 border border-brand-cyan/40 text-[11px] font-mono font-semibold text-brand-cyan">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-brand-cyan/10 border-l-2 border-brand-cyan text-[10px] font-mono font-semibold text-brand-cyan">
                 <CheckCircle2 className="w-3.5 h-3.5" /> Streaming Active
               </span>
             )}
@@ -38,13 +38,13 @@ export function HostControls({ onStartScreenShare, onSelectMovieFile, isStreamin
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Mode 1: High-Performance Screen Share */}
-        <div className="p-5 rounded-2xl bg-brand-canvas/80 border border-brand-border hover:border-brand-borderLight transition-all flex flex-col justify-between group">
+        <div className="p-4 sm:p-5 bg-brand-canvas/80 border border-brand-border hover:border-brand-borderLight transition-all flex flex-col justify-between group">
           <div>
             <div className="flex items-center gap-2 text-brand-purpleLight font-semibold text-sm mb-1.5 font-display">
               <Monitor className="w-4 h-4 text-brand-cyan" />
               <span>Source A: Screen & System Audio</span>
             </div>
-            <p className="text-xs text-neutral-400 leading-relaxed">
+            <p className="text-[11px] sm:text-xs text-neutral-400 leading-relaxed">
               Capture your entire display, application, or Chrome tab. Perfect for YouTube, anime, or gaming. Check <strong className="text-neutral-200">"Share system audio"</strong> when prompted.
             </p>
           </div>
@@ -61,13 +61,13 @@ export function HostControls({ onStartScreenShare, onSelectMovieFile, isStreamin
         </div>
 
         {/* Mode 2: Direct 6GB Local Movie Player */}
-        <div className="p-5 rounded-2xl bg-brand-canvas/80 border border-brand-border hover:border-brand-borderLight transition-all flex flex-col justify-between group">
+        <div className="p-4 sm:p-5 bg-brand-canvas/80 border border-brand-border hover:border-brand-borderLight transition-all flex flex-col justify-between group">
           <div>
             <div className="flex items-center gap-2 text-brand-cyan font-semibold text-sm mb-1.5 font-display">
               <HardDrive className="w-4 h-4 text-brand-cyan" />
               <span>Source B: Local 6GB Cinema File</span>
             </div>
-            <p className="text-xs text-neutral-400 leading-relaxed">
+            <p className="text-[11px] sm:text-xs text-neutral-400 leading-relaxed">
               Pipes any local <code className="text-brand-cyan font-mono bg-brand-card px-1 py-0.5 rounded">.mp4</code> or <code className="text-brand-cyan font-mono bg-brand-card px-1 py-0.5 rounded">.mkv</code> directly from disk into WebRTC. Zero upload time, uncompressed bitstream quality.
             </p>
           </div>

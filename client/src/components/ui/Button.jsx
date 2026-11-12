@@ -14,27 +14,28 @@ export function Button({
   icon: Icon,
   type = 'button',
   title = '',
+  ariaLabel,
 }) {
-  const base = 'relative inline-flex items-center justify-center font-medium tracking-wide transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-canvas active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none disabled:active:scale-100 select-none';
+  const base = 'relative inline-flex items-center justify-center font-medium tracking-wide transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-canvas disabled:opacity-40 disabled:pointer-events-none select-none';
 
   const variants = {
     // Brand Purple gradient
-    primary: 'bg-gradient-to-r from-brand-purple to-purple-600 hover:from-brand-purpleHover hover:to-purple-700 text-white font-semibold shadow-brand-glow border-t border-purple-400/40 focus-visible:ring-brand-purple rounded-xl',
+    primary: 'bg-brand-purple hover:bg-brand-purpleHover text-white font-semibold border border-brand-purple focus-visible:ring-brand-purple',
     
     // Brand Electric Cyan
-    cyan: 'bg-gradient-to-r from-brand-cyan to-cyan-400 hover:from-brand-cyanHover hover:to-cyan-500 text-brand-navy font-bold shadow-cyan-glow border-t border-white/60 focus-visible:ring-brand-cyan rounded-xl',
+    cyan: 'bg-brand-cyan hover:bg-brand-cyanHover text-brand-navy font-bold border border-brand-cyan focus-visible:ring-brand-cyan',
 
     // Hi-Fi Emerald
-    hifi: 'bg-gradient-to-r from-brand-cyan to-teal-400 hover:from-brand-cyanHover hover:to-teal-500 text-brand-navy font-bold shadow-cyan-glow border-t border-white/60 focus-visible:ring-brand-cyan rounded-xl',
+    hifi: 'bg-brand-cyan hover:bg-brand-cyanHover text-brand-navy font-bold border border-brand-cyan focus-visible:ring-brand-cyan',
 
     // Deep Surface Card
-    secondary: 'bg-brand-card hover:bg-brand-cardHover text-neutral-200 border border-brand-border hover:border-brand-borderLight shadow-sm focus-visible:ring-brand-purple rounded-xl',
+    secondary: 'bg-brand-card hover:bg-brand-cardHover text-neutral-200 border border-brand-border hover:border-brand-borderLight focus-visible:ring-brand-purple',
     
     // Ghost
     ghost: 'bg-transparent hover:bg-white/[0.08] text-neutral-300 hover:text-white rounded-lg',
     
     // Danger
-    danger: 'bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 focus-visible:ring-red-400 rounded-xl',
+    danger: 'bg-transparent hover:bg-red-500/10 text-red-300 border border-red-500/40 focus-visible:ring-red-400',
   };
 
   const sizes = {
@@ -50,6 +51,7 @@ export function Button({
       onClick={onClick}
       disabled={disabled}
       title={title}
+      aria-label={ariaLabel}
       className={`${base} ${variants[variant] || variants.primary} ${sizes[size] || sizes.md} ${className}`}
     >
       {Icon && <Icon className="w-4 h-4 shrink-0" />}

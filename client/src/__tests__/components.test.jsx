@@ -23,7 +23,7 @@ describe('Reusable UI & Lobby Components (Cinematic Redesign)', () => {
 
     fireEvent.change(nameInput, { target: { value: 'MovieHost' } });
 
-    const submitBtn = screen.getByRole('button', { name: /launch cinema lounge/i });
+    const submitBtn = screen.getByRole('button', { name: /open screening room/i });
     fireEvent.click(submitBtn);
 
     expect(handleJoin).toHaveBeenCalledTimes(1);
@@ -46,10 +46,10 @@ describe('Reusable UI & Lobby Components (Cinematic Redesign)', () => {
     expect(nameInput.value.length).toBeGreaterThan(3);
 
     // Mode is automatically switched to viewer join mode
-    const joinBtn = screen.getByRole('button', { name: /join lounge/i });
+    const joinBtn = screen.getByRole('button', { name: /enter screening room/i });
     expect(joinBtn).toBeInTheDocument();
 
-    // User can immediately click "Join Lounge" with the random name with 1 click!
+    // User can immediately click "Enter Screening Room" with the random name with 1 click!
     fireEvent.click(joinBtn);
 
     expect(handleJoin).toHaveBeenCalledWith({

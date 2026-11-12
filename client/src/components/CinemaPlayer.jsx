@@ -163,7 +163,7 @@ export function CinemaPlayer({
       onMouseMove={handleMouseMove}
       onTouchStart={handleMouseMove}
       onMouseLeave={() => setShowControls(false)}
-      className="relative w-full aspect-video bg-black rounded-2xl sm:rounded-3xl overflow-hidden shadow-player-stage border border-brand-border group select-none flex items-center justify-center"
+      className="relative w-full aspect-video bg-black overflow-hidden shadow-player-stage border border-brand-border group select-none flex items-center justify-center"
     >
       {/* Video Viewport */}
       {isHost ? (
@@ -186,14 +186,14 @@ export function CinemaPlayer({
 
       {/* Standby screen when not broadcasting */}
       {!mediaStream && !localVideoRef?.current?.srcObject && !localVideoRef?.current?.src && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-radial from-brand-card/70 to-black pointer-events-none">
-          <div className="w-16 h-16 rounded-2xl bg-brand-card border border-brand-border flex items-center justify-center text-brand-cyan mb-4 shadow-cyan-glow">
-            <Radio className="w-8 h-8 animate-pulse text-brand-cyan" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-3 sm:p-6 text-center bg-radial from-brand-card/70 to-black pointer-events-none">
+          <div className="w-10 h-10 sm:w-16 sm:h-16 bg-brand-card border border-brand-border flex items-center justify-center text-brand-cyan mb-2 sm:mb-4">
+            <Radio className="w-5 h-5 sm:w-8 sm:h-8 animate-pulse text-brand-cyan" />
           </div>
-          <h3 className="font-display font-bold text-lg text-white">
+          <h3 className="font-display font-bold text-sm sm:text-lg text-white">
             {isHost ? 'Cinema Stage Ready' : 'Connecting to Stream...'}
           </h3>
-          <p className="text-xs text-neutral-400 mt-1 max-w-sm">
+          <p className="hidden min-[420px]:block text-[11px] sm:text-xs text-neutral-400 mt-1 max-w-sm px-2">
             {isHost
               ? 'Choose "Screen & System Audio" or select a local 6GB movie file below to begin.'
               : 'Waiting for host broadcast to commence. Audio will stream in 256kbps stereo.'}
@@ -203,42 +203,43 @@ export function CinemaPlayer({
 
       {/* Top HUD Telemetry Overlay */}
       <div
-        className={`absolute top-0 inset-x-0 p-4 sm:p-5 bg-gradient-to-b from-black/90 via-black/40 to-transparent flex items-center justify-between transition-opacity duration-300 pointer-events-none ${
+        className={`absolute top-0 inset-x-0 p-2.5 sm:p-5 bg-gradient-to-b from-black/90 via-black/40 to-transparent flex items-center justify-between transition-opacity duration-300 pointer-events-none ${
           showControls ? 'opacity-100' : 'opacity-0'
         }`}
       >
         <div className="flex items-center gap-2 pointer-events-auto">
-          <Badge variant="live" icon={Radio}>1080p 60fps</Badge>
-          <Badge variant="cyan" icon={Sparkles}>Hi-Fi Stereo 256kbps</Badge>
+          <Badge variant="live" icon={Radio}>1080p</Badge>
+          <Badge variant="cyan" icon={Sparkles} className="hidden sm:inline-flex">Stereo 256kbps</Badge>
         </div>
 
         <div className="flex items-center gap-2 font-mono text-xs pointer-events-auto">
-          <span className="flex items-center gap-1.5 px-3 py-1 bg-brand-card/90 rounded-md border border-brand-border backdrop-blur-md text-neutral-200">
+          <span className="flex items-center gap-1.5 px-2 sm:px-3 py-1 bg-brand-card/90 border border-brand-border text-neutral-200">
             <Users className="w-3.5 h-3.5 text-brand-cyan" />
-            <span>{peerCount} {peerCount === 1 ? 'Peer' : 'Peers'}</span>
+            <span>{peerCount}<span className="hidden sm:inline"> {peerCount === 1 ? 'Peer' : 'Peers'}</span></span>
           </span>
         </div>
       </div>
 
       {/* Bottom Control Bar */}
       <div
-        className={`absolute bottom-0 inset-x-0 p-4 sm:p-5 bg-gradient-to-t from-black/95 via-black/60 to-transparent flex items-center justify-between transition-opacity duration-300 ${
+        className={`absolute bottom-0 inset-x-0 p-2 sm:p-5 bg-gradient-to-t from-black/95 via-black/60 to-transparent flex items-center justify-between transition-opacity duration-300 ${
           showControls ? 'opacity-100' : 'opacity-0'
         }`}
       >
         {/* Play/Pause & Volume Slider */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-1.5 sm:gap-4">
           <Button
             onClick={togglePlay}
             variant="ghost"
             size="sm"
-            className="p-2.5 rounded-full hover:bg-white/10 text-white"
+            className="min-w-11 min-h-11 p-2.5 hover:bg-white/10 text-white"
+            ariaLabel={isPlaying ? 'Pause video' : 'Play video'}
           >
             {isPlaying ? <Pause className="w-5 h-5 text-white" /> : <Play className="w-5 h-5 text-white" />}
           </Button>
 
-          <div className="flex items-center gap-2 bg-black/60 px-3 py-1.5 rounded-xl border border-brand-border">
-            <button onClick={toggleMute} className="text-neutral-400 hover:text-white transition">
+          <div className="flex items-center gap-2 bg-black/60 px-2 sm:px-3 py-1.5 border border-brand-border">
+            <button onClick={toggleMute} className="min-w-8 min-h-8 grid place-items-center text-neutral-400 hover:text-white transition" aria-label={isMuted ? 'Unmute' : 'Mute'}>
               {isMuted || volume === 0 ? <VolumeX className="w-4 h-4 text-red-400" /> : <Volume2 className="w-4 h-4 text-brand-cyan" />}
             </button>
             <input
@@ -248,7 +249,7 @@ export function CinemaPlayer({
               step="0.05"
               value={isMuted ? 0 : volume}
               onChange={handleVolumeChange}
-              className="w-20 sm:w-28 h-1.5 bg-neutral-700 rounded-lg appearance-none cursor-pointer accent-brand-cyan"
+              className="hidden min-[430px]:block w-16 sm:w-28 h-1.5 bg-neutral-700 appearance-none cursor-pointer accent-brand-cyan"
             />
           </div>
         </div>
@@ -259,8 +260,9 @@ export function CinemaPlayer({
             onClick={toggleFullscreen}
             variant="ghost"
             size="sm"
-            className="p-2.5 rounded-xl hover:bg-white/10 text-white"
+            className="min-w-11 min-h-11 p-2.5 hover:bg-white/10 text-white"
             title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+            ariaLabel={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
           >
             {isFullscreen ? (
               <Minimize className="w-5 h-5 text-white" />

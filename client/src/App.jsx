@@ -60,12 +60,12 @@ export default function App() {
   return (
     <div className="min-h-screen bg-brand-canvas text-neutral-100 flex flex-col font-sans selection:bg-brand-purple selection:text-brand-cyan">
       {/* Top Theater Header & Telemetry Bar */}
-      <header className="h-16 border-b border-brand-border/80 bg-brand-canvas/70 backdrop-blur-xl px-4 sm:px-8 flex items-center justify-between sticky top-0 z-50">
+      <header className="h-14 sm:h-16 border-b border-brand-border bg-brand-canvas px-3 sm:px-8 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-3">
           <img
             src="/cinemesh-logo.png"
             alt="CineMesh"
-            className="h-8 w-auto object-contain drop-shadow-[0_0_12px_rgba(109,24,242,0.4)]"
+            className="h-6 sm:h-8 w-auto object-contain"
           />
           <div className="hidden sm:block pl-3 border-l border-brand-border">
             <p className="font-mono text-[10px] text-brand-cyan/80 uppercase">
@@ -76,7 +76,7 @@ export default function App() {
 
         {/* Room Code & Header Actions */}
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-brand-card/90 border border-brand-border rounded-xl text-xs font-mono">
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-brand-card border border-brand-border text-xs font-mono">
             <span className="text-neutral-500">ROOM:</span>
             <span className="font-semibold text-brand-cyan">{session.roomId}</span>
           </div>
@@ -87,8 +87,9 @@ export default function App() {
             size="sm"
             icon={copied ? Check : Copy}
             className="text-xs"
+            ariaLabel={copied ? 'Invite link copied' : 'Copy invite link'}
           >
-            {copied ? 'Link Copied' : 'Invite Friends'}
+            <span className="hidden min-[400px]:inline">{copied ? 'Link Copied' : 'Invite Friends'}</span>
           </Button>
 
           <Button
@@ -101,16 +102,17 @@ export default function App() {
             size="sm"
             icon={LogOut}
             className="text-xs"
+            ariaLabel="Leave screening room"
           >
-            Leave
+            <span className="hidden min-[400px]:inline">Leave</span>
           </Button>
         </div>
       </header>
 
       {/* Main Theater Auditorium Grid */}
-      <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+      <main className="flex-1 p-3 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 items-start">
         {/* Left 3 Columns: Cinema Stage & Broadcaster Deck */}
-        <div className="lg:col-span-3 space-y-6">
+        <div className="lg:col-span-3 space-y-4 sm:space-y-6">
           <CinemaPlayer
             mediaStream={remoteStream}
             isHost={session.isHost}
@@ -129,7 +131,7 @@ export default function App() {
         </div>
 
         {/* Right 1 Column: Real-Time Lounge Chat Transcript */}
-        <div className="lg:col-span-1 h-[500px] lg:h-[640px] sticky top-24">
+        <div className="lg:col-span-1 h-[420px] sm:h-[500px] lg:h-[640px] lg:sticky lg:top-24">
           <Chat socket={socket} roomId={session.roomId} userName={session.userName} />
         </div>
       </main>
